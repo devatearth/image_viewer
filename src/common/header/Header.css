@@ -9,7 +9,7 @@
   height: 50px;
 }
 
-.search-box{
+.search-box {
   position: absolute;
   right: 5em;
   width: 300px;
@@ -18,3 +18,24 @@
   margin-top: auto;
   margin-bottom: auto;
 }
+
+.poster {
+  height: 100%;
+  width: auto;
+  padding: 10px;
+}
+.flex-container {
+  display: flex;
+  padding: auto;
+}
+
+.flex-container > div {
+  margin: 16px;
+}
+@media (max-width: 992px) {
+  .flex-container {
+    flex-direction: column;
+  }
+}
+
+

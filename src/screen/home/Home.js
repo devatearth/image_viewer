@@ -3,12 +3,9 @@ import "./Home.css";
 import Header from "../../common/header/Header";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
-import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
-import CardMedia from "@material-ui/core/CardMedia";
 import Avatar from "@material-ui/core/Avatar";
 import IconButton from "@material-ui/core/IconButton";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
@@ -76,13 +73,17 @@ class Home extends Component {
       <div>
         <Header searchBox={true} profile={true} />
 
-        <div className="flex-container">
-          <GridList cellHeight={600} cols={2} className="poster">
+        <div>
+          <GridList cellHeight={700} cols={2}>
             {this.state.posts.map((post) => (
-              <div>
+              <GridListTile key={"instagram" + post.id} className="poster">
                 <Card variant="outlined">
                   <CardHeader
-                    avatar={<Avatar aria-label="recipe">R</Avatar>}
+                    avatar={
+                      <Avatar aria-label="recipe">
+                        <img src={post.media_url} alt={post.id}/>
+                      </Avatar>
+                    }
                     action={
                       <IconButton aria-label="settings">
                         <MoreVertIcon />
@@ -97,8 +98,8 @@ class Home extends Component {
                     </GridListTile>
                   </CardContent>
                 </Card>
-                <br/>
-              </div>
+                <br />
+              </GridListTile>
             ))}
           </GridList>
         </div>

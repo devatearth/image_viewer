@@ -13,19 +13,20 @@ class Home extends Component {
     super();
     this.state = {
       posts: [],
+      copyOfPosts: [],
       hardCoded_profile_pic:
         "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70",
       search_string: " ",
     };
   }
   seachInputHandler = (event) => {
-    this.setState({ search_string: event.target.value });
-    this.componentDidMount();
+    console.log("all posts deleted");
+    this.setState({ posts: [], search_string: event.target.value });
+    console.log(this.state.posts);
+    this.filterPostBySeachString(event.target.value);
   };
   componentDidMount() {
-    console.log(sessionStorage.getItem("access-token"));
-    if (sessionStorage.getItem("access-token") == null) {
-      console.log("out");
+    if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
     }
     let data = null;
@@ -41,26 +42,27 @@ class Home extends Component {
     xhr.addEventListener("readystatechange", function() {
       if (this.readyState === 4) {
         var response_Received = JSON.parse(this.responseText);
-        console.log(response_Received);
         let number_of_posts = response_Received.data.length;
         for (let i = 0; i < number_of_posts; i++) {
           var id = response_Received.data[i].id;
-          if (that.state.search_string !== " ") {
-            if (
-              response_Received.data[i].caption.search(
-                "/" + that.state.search_string + "/i"
-              )
-            ) {
-              that.temp(id);
-            }
-          } else {
-            that.temp(id);
-          }
+          that.getPostDetailsForID(id);
         }
-      }
+        that.setState({ copyOfPosts: response_Received.data });
+        }
     });
   }
-  temp = (id) => {
+  filterPostBySeachString = (search_string) => {
+    let number_of_posts = this.state.copyOfPosts.length;
+    console.log("filter applied");
+    for (let i = 0; i < number_of_posts; i++) {
+      if (this.state.copyOfPosts[i].caption.includes(search_string)) {
+        console.log(this.state.copyOfPosts[i].caption);
+        this.getPostDetailsForID(this.state.copyOfPosts[i].id);
+      }
+    }
+  };
+  getPostDetailsForID = (id) => {
+    console.log(id);
     let data = null;
     let xhr = new XMLHttpRequest();
     let that = this;
@@ -76,16 +78,12 @@ class Home extends Component {
     xhr.addEventListener("readystatechange", function() {
       if (this.readyState === 4) {
         var response = JSON.parse(this.responseText);
-        if (that.state.search_string === " ") {
-          var posts_available = that.state.posts;
-        } else {
-          var posts_available = [];
-        }
-        console.log(that.state.search_string);
+        var posts_available = that.state.posts;
         posts_available.push(response);
         that.setState({
           posts: posts_available,
         });
+        console.log(that.state.posts);
       }
     });
   };

@@ -4,10 +4,29 @@
   transform: translateZ(0);
   width: 100%;
 }
-
+.grid-list{
+  padding: 100px;
+}
 .poster {
-  max-width: 100%;
-  max-height: 100%;
-  flex-wrap: nowrap;
-  transform: translateZ(0);
+  width: 100% !important;
+  height: 100% !important;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.07);
+}
+
+
+.poster-image{
+  width : 50%;
+  height: 50%;
+}
+
+.thumbnail-image{
+  width: 50px !important;
+  height: 50px !important;
+  cursor: pointer;
+}
+.dispNone{
+  display: none;
+}
+.dispBlock{
+  display: block;
 }

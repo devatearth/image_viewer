@@ -16,7 +16,8 @@ class Login extends Component {
       username: "",
       password: "",
       loginControl: "disp-none",
-      accessToken: "IGQVJXeTJXSko4SzlHQ0RLS2tsdG9hbVNCY0p3VlE3QzNiZAWFYLWVFR096ZA1hXTXg4djNVVnlWWVZAPbzV5RjM2dFJfLVpCbDExS3E1MGg4S3dCLUd5b0twYWFDS3N1VTVvT1JMU05mWUI2cFB2c2JhdwZDZD",
+      accessToken:
+        "IGQVJYWkpvV2N1azJWSVJOWl9JZAV9ZAVlRSX2NER0tRbTU4ZAzlJN2hjaDExTFpsa3FDWi00UHJrQnNSQkdkUFNZAZA0JwNFp4aXoxSDZAPaUFwNUs1R3RTSXBUSkxsV2dWS1ltQTlmSFp1TVFBMDY2bzd0RgZDZD",
       dummy_username: "Dev",
       dummy_password: "12345678",
       usernameRequired: "disp-none",

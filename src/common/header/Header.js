@@ -22,6 +22,9 @@ class Header extends Component {
     sessionStorage.removeItem("access-token");
     this.props.history.push("/");
   }
+  onProfileClick = () =>{
+    this.props.history.push("/profile");
+  }
   render() {
     return (
       <div>
@@ -49,7 +52,7 @@ class Header extends Component {
               </Avatar>
               <div className={this.state.showMenu}>
                 <div class="dropdown-content">
-                  <div className="pointer">My Account</div>
+                  <div onClick={this.onProfileClick}className="pointer">My Account</div>
                   <div className="divider" ></div>
                   <div onClick={this.logoutHandler} className="pointer">Logout</div>
                 </div>

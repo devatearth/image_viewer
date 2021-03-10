@@ -52,11 +52,17 @@ class Header extends Component {
               </Avatar>
               <div className={this.state.showMenu}>
                 <div class="dropdown-content">
+                  {console.log(this.props)}
+                  {this.props.myAccount !== false ?(
+                    <div>
                   <div onClick={this.onProfileClick}className="pointer">My Account</div>
                   <div className="divider" ></div>
+                  </div>
+                  ):("")
+                  }
                   <div onClick={this.logoutHandler} className="pointer">Logout</div>
+                  </div>
                 </div>
-              </div>
             </div>
           ) : (
             ""

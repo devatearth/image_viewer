@@ -1,12 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Header from '../src/common/header/Header';
-import Login from '../src/screen/login/Login';
+import Controller from './screen/Controller';
+
 ReactDOM.render(
     <span>
-        <Header/>
-        <Login/>
+        <Controller/>
     </span>, 
     document.getElementById('root')
 );

@@ -51,8 +51,7 @@ class Header extends Component {
                 />
               </Avatar>
               <div className={this.state.showMenu}>
-                <div class="dropdown-content">
-                  {console.log(this.props)}
+                <div className="dropdown-content">
                   {this.props.myAccount !== false ?(
                     <div>
                   <div onClick={this.onProfileClick}className="pointer">My Account</div>

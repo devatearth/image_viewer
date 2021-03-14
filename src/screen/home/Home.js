@@ -1,13 +1,34 @@
 import React, { Component } from "react";
 import "./Home.css";
 import Header from "../../common/header/Header";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import Input from "@material-ui/core/Input";
+import Button from "@material-ui/core/Button";
+
+var styles = (theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  gridList: {
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.07)",
+  },
+  poster: {
+    width: "100%",
+    height: "100%",
+  },
+  response: {
+    width: "49%",
+    margin: "7px",
+  },
+});
+
 class Home extends Component {
   constructor() {
     super();
@@ -19,12 +40,41 @@ class Home extends Component {
       search_string: " ",
     };
   }
+
   seachInputHandler = (event) => {
-    console.log("all posts deleted");
     this.setState({ posts: [], search_string: event.target.value });
-    console.log(this.state.posts);
     this.filterPostBySeachString(event.target.value);
   };
+  likeHandler = (value) => {
+    let number_of_posts = this.state.posts.length;
+    var temp_array = this.state.posts;
+    for (let i = 0; i < number_of_posts; i++) {
+      if (temp_array[i].id === value) {
+        if (temp_array[i].like === false) {
+          temp_array[i].like = true;
+          temp_array[i].likeCount++;
+          temp_array[i].className = 'red';
+        } else {
+          temp_array[i].like = false;
+          temp_array[i].likeCount--;
+          temp_array[i].className = 'none';
+        }
+      }
+      this.setState({ posts: temp_array });
+    }
+  };
+  commentHandler = (id,value) =>{
+    let number_of_posts = this.state.posts.length;
+    var temp_array = this.state.posts;
+    for (let i = 0; i < number_of_posts; i++) {
+      if (temp_array[i].id === id) {
+        var comments = temp_array[i].comments;
+        comments.push(value);
+        temp_array[i].comments = comments;
+      }
+      this.setState({ posts: temp_array });
+    }
+  }
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
@@ -48,21 +98,18 @@ class Home extends Component {
           that.getPostDetailsForID(id);
         }
         that.setState({ copyOfPosts: response_Received.data });
-        }
+      }
     });
   }
   filterPostBySeachString = (search_string) => {
     let number_of_posts = this.state.copyOfPosts.length;
-    console.log("filter applied");
     for (let i = 0; i < number_of_posts; i++) {
       if (this.state.copyOfPosts[i].caption.includes(search_string)) {
-        console.log(this.state.copyOfPosts[i].caption);
         this.getPostDetailsForID(this.state.copyOfPosts[i].id);
       }
     }
   };
   getPostDetailsForID = (id) => {
-    console.log(id);
     let data = null;
     let xhr = new XMLHttpRequest();
     let that = this;
@@ -78,18 +125,21 @@ class Home extends Component {
     xhr.addEventListener("readystatechange", function() {
       if (this.readyState === 4) {
         var response = JSON.parse(this.responseText);
+        response.like = false;
+        response.likeCount = 7;
+        response.comments = [];
         var posts_available = that.state.posts;
         posts_available.push(response);
         that.setState({
           posts: posts_available,
         });
-        console.log(that.state.posts);
       }
     });
   };
   render() {
+    const { classes } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         <Header
           searchBox={true}
           profile={true}
@@ -97,45 +147,58 @@ class Home extends Component {
           seachInputHandler={this.seachInputHandler}
           history={this.props.history}
         />
-        <div>
-          <GridList cellHeight="auto" cols={2}>
-            {this.state.posts.map((post) => (
-              <GridListTile key={"instagram" + post.id} className="grid-list">
-                <Card className="poster" variant="outlined">
-                  <CardHeader
-                    avatar={
-                      <Avatar>
-                        <img
-                          className="thumbnail-image"
-                          src={this.state.hardCoded_profile_pic}
-                          alt={post.id}
-                        />
-                      </Avatar>
-                    }
-                    title={post.username}
-                    subheader={post.timestamp}
-                  />
-                  <CardContent>
-                    <GridListTile key={"grid" + post.id}>
+        <div className="show-case">
+          {this.state.posts.map((post) => (
+            <div key={"instagram" + post.id} className={classes.response}>
+              <Card className={classes.poster} variant="outlined">
+                <CardHeader
+                  avatar={
+                    <Avatar>
                       <img
-                        src={post.media_url}
+                        className="thumbnail-image"
+                        src={this.state.hardCoded_profile_pic}
                         alt={post.id}
-                        className="poster-image"
                       />
-                      <Typography>
-                        <b>{post.caption}</b>
-                      </Typography>
-                    </GridListTile>
-                  </CardContent>
-                </Card>
+                    </Avatar>
+                  }
+                  title={post.username}
+                  subheader={post.timestamp.toString("dd/mm/yyyy HH:MM:SS")}
+                />
+
+                <CardContent>
+                  <img
+                    src={post.media_url}
+                    alt={post.id}
+                    className="poster-image"
+                  />
+                  <div className="divider" />
+                  <Typography>
+                    <b>{post.caption}</b>
+                  </Typography>
+                </CardContent>
+                <span
+                  onClick={() => {
+                    this.likeHandler(post.id);
+                  }}
+                >
+                  <FavoriteBorderIcon className={post.className}/>
+                </span>
+                <span >{"  " + post.likeCount + "Likes"}</span>
                 <br />
-              </GridListTile>
-            ))}
-          </GridList>
+                {post.comments.map((comment) => (
+                  <div>{comment}</div>
+                )) }
+                <Input id={post.id} type="text" placeholder="Add a comment" />
+                <Button variant="contained" color="primary" onClick={()=>this.commentHandler(post.id,post.username+': '+document.getElementById(post.id).value)}>
+                  ADD
+                </Button>
+              </Card>
+            </div>
+          ))}
         </div>
       </div>
     );
   }
 }
 
-export default Home;
+export default withStyles(styles)(Home);

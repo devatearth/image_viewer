@@ -10,6 +10,9 @@
 .poster-image{
   width : auto;
   height: auto;
+  max-width: 750px;
+  max-height:800px
+  
 }
 
 .thumbnail-image{
@@ -26,7 +29,7 @@
 .show-case{
   display: flex;
   flex-wrap: wrap;
-  margin: 20px !important;
+  margin: 30px !important;
   }
 .show-case .gird-tabs{
   padding: 20px !important;
@@ -34,7 +37,11 @@
 }
 .red{
   color: red;
+  cursor: pointer;
 }
 .none{
   background-color: white;
+}
+.comment-box{
+  padding: 10px;
 }

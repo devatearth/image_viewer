@@ -7,9 +7,13 @@ import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
 import { withStyles } from "@material-ui/core/styles";
+import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
+import CardActions from "@material-ui/core/CardActions";
+import FormControl from "@material-ui/core/FormControl";
 
 var styles = (theme) => ({
   root: {
@@ -26,6 +30,15 @@ var styles = (theme) => ({
   response: {
     width: "49%",
     margin: "7px",
+  },
+  textFieldWidth: {
+    paddingLeft: "30px",
+    margin: "0 0 0 -7px",
+    width: "80%",
+  },
+  hashTags: {
+    display: "block",
+    color: "#00376b",
   },
 });
 
@@ -44,6 +57,22 @@ class Home extends Component {
     this.setState({ posts: [], search_string: event.target.value });
     this.filterPostBySeachString(event.target.value);
   };
+  formatTime = (time) => {
+    let tempFormat = new Date(time);
+    let timeFormat =
+      tempFormat.getUTCDate() +
+      "/" +
+      (tempFormat.getUTCMonth() + 1) +
+      "/" +
+      tempFormat.getUTCFullYear() +
+      " " +
+      tempFormat.getUTCHours() +
+      ":" +
+      tempFormat.getUTCMinutes() +
+      ":" +
+      tempFormat.getUTCSeconds();
+    return timeFormat;
+  };
   likeHandler = (value) => {
     let number_of_posts = this.state.posts.length;
     var temp_array = this.state.posts;
@@ -52,17 +81,17 @@ class Home extends Component {
         if (temp_array[i].like === false) {
           temp_array[i].like = true;
           temp_array[i].likeCount++;
-          temp_array[i].className = 'red';
+          temp_array[i].className = "red";
         } else {
           temp_array[i].like = false;
           temp_array[i].likeCount--;
-          temp_array[i].className = 'none';
+          temp_array[i].className = "none";
         }
       }
       this.setState({ posts: temp_array });
     }
   };
-  commentHandler = (id,value) =>{
+  commentHandler = (id, value) => {
     let number_of_posts = this.state.posts.length;
     var temp_array = this.state.posts;
     for (let i = 0; i < number_of_posts; i++) {
@@ -73,7 +102,7 @@ class Home extends Component {
       }
       this.setState({ posts: temp_array });
     }
-  }
+  };
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
@@ -103,7 +132,11 @@ class Home extends Component {
   filterPostBySeachString = (search_string) => {
     let number_of_posts = this.state.copyOfPosts.length;
     for (let i = 0; i < number_of_posts; i++) {
-      if (this.state.copyOfPosts[i].caption.includes(search_string)) {
+      if (
+        this.state.copyOfPosts[i].caption
+          .toUpperCase()
+          .includes(search_string.toUpperCase())
+      ) {
         this.getPostDetailsForID(this.state.copyOfPosts[i].id);
       }
     }
@@ -127,6 +160,14 @@ class Home extends Component {
         response.like = false;
         response.likeCount = 7;
         response.comments = [];
+        response.className = "none";
+        let tags = "";
+        let captionData = response.caption.split("#");
+        response.caption = captionData[0];
+        for (let i = 1; i < captionData.length; i++) {
+          tags += "#" + captionData[i] + " ";
+        }
+        response.hashTags = tags;
         var posts_available = that.state.posts;
         posts_available.push(response);
         that.setState({
@@ -161,7 +202,7 @@ class Home extends Component {
                     </Avatar>
                   }
                   title={post.username}
-                  subheader={post.timestamp.toString("dd/mm/yyyy HH:MM:SS")}
+                  subheader={this.formatTime(post.timestamp)}
                 />
 
                 <CardContent>
@@ -173,24 +214,49 @@ class Home extends Component {
                   <div className="divider" />
                   <Typography>
                     <b>{post.caption}</b>
+                    <span className={classes.hashTags}>{post.hashTags}</span>
                   </Typography>
+                  <span
+                    onClick={() => {
+                      this.likeHandler(post.id);
+                    }}
+                  >
+                    {post.className === "red" ? (
+                      <FavoriteIcon className={post.className} />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </span>
+                  <span>{"  " + post.likeCount + "Likes"}</span>
+                  <br />
+                  {post.comments.map((comment) => (
+                    <div>{comment}</div>
+                  ))}
+                  <FormControl>
+                    <InputLabel htmlFor={post.id} required>
+                      Add a comment
+                    </InputLabel>
+                    <Input
+                      id={post.id}
+                      type="text"
+                      className={classes.textFieldWidth}
+                    />
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() =>
+                      this.commentHandler(
+                        post.id,
+                        post.username +
+                          ": " +
+                          document.getElementById(post.id).value
+                      )
+                    }
+                  >
+                    ADD
+                  </Button>
                 </CardContent>
-                <span
-                  onClick={() => {
-                    this.likeHandler(post.id);
-                  }}
-                >
-                  <FavoriteBorderIcon className={post.className} color='secondary'/>
-                </span>
-                <span >{"  " + post.likeCount + "Likes"}</span>
-                <br />
-                {post.comments.map((comment) => (
-                  <div>{comment}</div>
-                )) }
-                <Input id={post.id} type="text" placeholder="Add a comment" />
-                <Button variant="contained" color="primary" onClick={()=>this.commentHandler(post.id,post.username+': '+document.getElementById(post.id).value)}>
-                  ADD
-                </Button>
               </Card>
             </div>
           ))}

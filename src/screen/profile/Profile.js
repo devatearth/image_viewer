@@ -3,7 +3,6 @@ import "./Profile.css";
 import Header from "../../common/header/Header";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
-import GridListTileBar from "@material-ui/core/GridListTileBar";
 import Avatar from "@material-ui/core/Avatar";
 import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
@@ -12,9 +11,8 @@ import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-// import ListSubheader from "@material-ui/core/ListSubheader";
+import Modal from "../../common/modal/Modal";
 
-// Custom styles - Material Card component
 const customStyles = (theme) => ({
   avatarStyle: {
     float: "left",
@@ -27,12 +25,6 @@ const customStyles = (theme) => ({
     cursor: "pointer",
   },
 });
-const display = {
-  display: "block",
-};
-const hide = {
-  display: "none",
-};
 
 class Profile extends Component {
   constructor() {
@@ -43,8 +35,7 @@ class Profile extends Component {
       count_of_posts: 0,
       hardCoded_profile_pic: sessionStorage.getItem("profile_picture"),
       fullName: "Devanathan Babu ",
-      showModal: "dispNone",
-      toggle: false,
+      showModal: false,
       usernameChange: "",
       usernameChangeModalShow: "dispNone",
       showModalforId: null,
@@ -107,98 +98,20 @@ class Profile extends Component {
       }
     });
   };
-  updateUSerNamehandler = () => {
-    this.setState({ showModal: true });
-  };
-  changeUsernameHandler = (e) => {
-    if (this.state.usernameChange !== "") {
-      this.setState({ fullName: this.state.usernameChange });
-      this.toggle();
-    } else {
-      this.setState({ usernameChangeModalShow: "dispBlock" });
-    }
-  };
-  inputUsernameChangeHandler = (e) => {
-    this.setState({ usernameChange: e.target.value,usernameChangeModalShow: "dispNone"});
-  };
-  showModalforId = (id)=>{
-    console.log(id);
-    this.setState({showModalforId:id});
+   closeModal = ()=>{
+    this.setState({ showModal: false });
+  }
+  saveUsername =(event)=>{
+    this.setState({ showModal: false });
+  }
+  showNameUpdateModal = ()=>{
+    this.setState({showModal:true});
+  }
+  updateUsernameHandler =(value)=>{
+    this.setState({showModal:false,fullName:value});
   }
   render() {
     var modal = [];
-    if (this.state.usernameChangeModalShow == "dispBlock") {
-      modal.push(
-        <div className="modal" style={this.state.toggle ? display : hide}>
-          <div className="modal-content">
-            <h3> Edit</h3>
-            <FormControl>
-              <InputLabel htmlFor="user-name" required>
-                Full Name
-              </InputLabel>
-              <Input
-                id="user-name"
-                type="text"
-                onChange={this.inputUsernameChangeHandler}
-              />
-              <br />
-            </FormControl>
-            <FormHelperText className={this.state.usernameChangeModalShow}>
-              <span className="red">required</span>
-            </FormHelperText>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.changeUsernameHandler}
-            >
-              UPDATE
-            </Button>
-          </div>
-        </div>
-      );
-    } else {
-      if (this.state.showModalforId !== null) {
-        console.log("iiii");
-        let number_of_posts = this.state.posts.length;
-        var temp_array = this.state.posts;
-        var post = {};
-        for (let i = 0; i < number_of_posts; i++) {
-          if (temp_array[i].id === this.state.showModalforId) {
-          post = temp_array[i];
-        }
-      }
-        modal.push(
-          <div className="modal" style={this.state.toggle ? display : hide}>
-            <div className="modal-content image-showcase">
-              <div className="leftside-modal">
-                <img src={post.media_url} alt={post.id} />
-              </div>
-              <FormControl>
-                <InputLabel htmlFor="user-name" required>
-                  Full Name
-                </InputLabel>
-                <Input
-                  id="user-name"
-                  type="text"
-                  onChange={this.inputUsernameChangeHandler}
-                />
-                <br />
-              </FormControl>
-              <FormHelperText className={this.state.usernameChangeModalShow}>
-                <span className="red">required</span>
-              </FormHelperText>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={this.changeUsernameHandler}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        );
-      }
-    }
     const { classes } = this.props;
     return (
       <div>
@@ -231,7 +144,7 @@ class Profile extends Component {
                 variant="contained"
                 color="secondary"
                 className={classes.button}
-                onClick={this.toggle}
+                onClick={this.showNameUpdateModal}
               >
                 <EditIcon className={classes.editIcon} />
               </Button>
@@ -250,13 +163,21 @@ class Profile extends Component {
                 >
                   <img
                     src={post.media_url}
-                    alt="Picture post"
+                    alt="post"
                     width="250"
                     height="350"
                   />
                 </GridListTile>
               ))}
           </GridList>
+          {this.state.showModal === true && (
+            <div id="modal">
+              <Modal open={true} 
+              closeModal={this.closeModal}
+              module = "usernameUpdate"
+              performUpdate={this.updateUsernameHandler}/>
+            </div>
+          )}
         </div>
       </div>
     );

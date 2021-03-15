@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import "./Login.css";
+import Button from "@material-ui/core/Button";
 import Header from "../../common/header/Header";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
 import CardContent from "@material-ui/core/CardContent";
-import Button from "@material-ui/core/Button";
 import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
-import FormHelperText from "@material-ui/core/FormHelperText";
+
 class Login extends Component {
   constructor() {
     super();
@@ -24,6 +25,7 @@ class Login extends Component {
       passwordRequired: "disp-none",
     };
   }
+  /*This method will handle the login functions */
   loginClickHandler = () => {
     this.state.username === ""
       ? this.setState({ usernameRequired: "disp-block" })
@@ -48,9 +50,11 @@ class Login extends Component {
       this.setState({ loginControl: "disp-none" });
     }
   };
+/* When the user types something on username textbox the change is captured here*/
   inputUsernameChangeHandler = (e) => {
     this.setState({ username: e.target.value });
   };
+/* When the user types something on password textbox the change is captured here*/
   inputPasswordChangeHandler = (e) => {
     this.setState({ password: e.target.value });
   };

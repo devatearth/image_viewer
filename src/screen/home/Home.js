@@ -35,8 +35,7 @@ class Home extends Component {
     this.state = {
       posts: [],
       copyOfPosts: [],
-      hardCoded_profile_pic:
-        "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70",
+      hardCoded_profile_pic: sessionStorage.getItem("profile_picture"),
       search_string: " ",
     };
   }
@@ -181,7 +180,7 @@ class Home extends Component {
                     this.likeHandler(post.id);
                   }}
                 >
-                  <FavoriteBorderIcon className={post.className}/>
+                  <FavoriteBorderIcon className={post.className} color='secondary'/>
                 </span>
                 <span >{"  " + post.likeCount + "Likes"}</span>
                 <br />

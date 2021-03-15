@@ -37,6 +37,7 @@ class Login extends Component {
     ) {
       this.setState({ loginControl: "disp-none" });
       sessionStorage.setItem("access-token", this.state.accessToken);
+      sessionStorage.setItem("profile_picture" , "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70");
       this.props.history.push("/home");
     } else if (this.state.username !== "" && this.state.password !== "") {
       this.setState({ loginControl: "disp-block" });

@@ -1,12 +1,12 @@
 import React, { Component } from "react";
 import "./Home.css";
+import { withStyles } from "@material-ui/core/styles";
 import Header from "../../common/header/Header";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
-import { withStyles } from "@material-ui/core/styles";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import Input from "@material-ui/core/Input";
@@ -14,7 +14,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import CardActions from "@material-ui/core/CardActions";
 import FormControl from "@material-ui/core/FormControl";
-
+/*Higher order component */
 var styles = (theme) => ({
   root: {
     flexGrow: 1,
@@ -42,6 +42,7 @@ var styles = (theme) => ({
   },
 });
 
+/* Home component class*/
 class Home extends Component {
   constructor() {
     super();
@@ -52,11 +53,12 @@ class Home extends Component {
       search_string: " ",
     };
   }
-
+/*When a user searches something on header search bar the request is handled here*/
   seachInputHandler = (event) => {
     this.setState({ posts: [], search_string: event.target.value });
     this.filterPostBySeachString(event.target.value);
   };
+/*This below code will format the date as per our need DD/MM/YY HH:MM:SS*/
   formatTime = (time) => {
     let tempFormat = new Date(time);
     let timeFormat =
@@ -73,6 +75,7 @@ class Home extends Component {
       tempFormat.getUTCSeconds();
     return timeFormat;
   };
+/*When a user likes the post the request is handled here*/
   likeHandler = (value) => {
     let number_of_posts = this.state.posts.length;
     var temp_array = this.state.posts;
@@ -91,6 +94,7 @@ class Home extends Component {
       this.setState({ posts: temp_array });
     }
   };
+/*When a user comments on a post the request is handled here*/
   commentHandler = (id, value) => {
     let number_of_posts = this.state.posts.length;
     var temp_array = this.state.posts;
@@ -103,6 +107,7 @@ class Home extends Component {
       this.setState({ posts: temp_array });
     }
   };
+/*All API fetch happens within componentDidMount method*/
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
@@ -129,6 +134,7 @@ class Home extends Component {
       }
     });
   }
+/*This method will be used by serch feature in header search bar*/
   filterPostBySeachString = (search_string) => {
     let number_of_posts = this.state.copyOfPosts.length;
     for (let i = 0; i < number_of_posts; i++) {
@@ -141,6 +147,7 @@ class Home extends Component {
       }
     }
   };
+/*When a id of a image is passed to the method this method will store the equavalent data to state variable by API fetch*/
   getPostDetailsForID = (id) => {
     let data = null;
     let xhr = new XMLHttpRequest();

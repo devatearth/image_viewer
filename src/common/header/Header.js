@@ -18,26 +18,33 @@ class Header extends Component {
       this.setState({ showMenu: "dispNone" });
     }
   };
-  logoutHandler = () =>{
+  logoutHandler = () => {
     sessionStorage.removeItem("access-token");
     this.props.history.push("/");
-  }
-  onProfileClick = () =>{
+  };
+  onProfileClick = () => {
     this.props.history.push("/profile");
-  }
+  };
+  redirectToHome = () => {
+    if (sessionStorage.getItem("access-token")) {
+      this.props.history.push("/home");
+    }
+  };
   render() {
     return (
       <div>
         <div className="app-header">
-          <div>Image Viewer</div>
+          <div className="pointer" onClick={this.redirectToHome}>
+            Image Viewer
+          </div>
           {this.props.searchBox === true ? (
-            <span className="search-box">
+            <div className="search-box">
               <SearchIcon className="search-icon" />
               <InputBase
                 placeholder="Search..."
                 onChange={this.props.seachInputHandler}
               />
-            </span>
+            </div>
           ) : (
             ""
           )}
@@ -51,10 +58,20 @@ class Header extends Component {
                 />
               </Avatar>
               <div className={this.state.showMenu}>
-                <div class="dropdown-content">
-                  <div onClick={this.onProfileClick}className="pointer">My Account</div>
-                  <div className="divider" ></div>
-                  <div onClick={this.logoutHandler} className="pointer">Logout</div>
+                <div className="dropdown-content">
+                  {this.props.myAccount !== false ? (
+                    <div>
+                      <div onClick={this.onProfileClick} className="pointer">
+                        My Account
+                      </div>
+                      <div className="divider" />
+                    </div>
+                  ) : (
+                    ""
+                  )}
+                  <div onClick={this.logoutHandler} className="pointer">
+                    Logout
+                  </div>
                 </div>
               </div>
             </div>

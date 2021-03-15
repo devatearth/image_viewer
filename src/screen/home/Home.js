@@ -1,29 +1,107 @@
 import React, { Component } from "react";
 import "./Home.css";
 import Header from "../../common/header/Header";
-import GridList from "@material-ui/core/GridList";
-import GridListTile from "@material-ui/core/GridListTile";
 import CardContent from "@material-ui/core/CardContent";
 import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import Avatar from "@material-ui/core/Avatar";
 import Typography from "@material-ui/core/Typography";
+import { withStyles } from "@material-ui/core/styles";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import Input from "@material-ui/core/Input";
+import InputLabel from "@material-ui/core/InputLabel";
+import Button from "@material-ui/core/Button";
+import CardActions from "@material-ui/core/CardActions";
+import FormControl from "@material-ui/core/FormControl";
+
+var styles = (theme) => ({
+  root: {
+    flexGrow: 1,
+  },
+  gridList: {
+    boxShadow:
+      "0 4px 8px 0 rgba(0, 0, 0, 0.3), 0 6px 20px 0 rgba(0, 0, 0, 0.07)",
+  },
+  poster: {
+    width: "100%",
+    height: "100%",
+  },
+  response: {
+    width: "49%",
+    margin: "7px",
+  },
+  textFieldWidth: {
+    paddingLeft: "30px",
+    margin: "0 0 0 -7px",
+    width: "80%",
+  },
+  hashTags: {
+    display: "block",
+    color: "#00376b",
+  },
+});
+
 class Home extends Component {
   constructor() {
     super();
     this.state = {
       posts: [],
       copyOfPosts: [],
-      hardCoded_profile_pic:
-        "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70",
+      hardCoded_profile_pic: sessionStorage.getItem("profile_picture"),
       search_string: " ",
     };
   }
+
   seachInputHandler = (event) => {
-    console.log("all posts deleted");
     this.setState({ posts: [], search_string: event.target.value });
-    console.log(this.state.posts);
     this.filterPostBySeachString(event.target.value);
+  };
+  formatTime = (time) => {
+    let tempFormat = new Date(time);
+    let timeFormat =
+      tempFormat.getUTCDate() +
+      "/" +
+      (tempFormat.getUTCMonth() + 1) +
+      "/" +
+      tempFormat.getUTCFullYear() +
+      " " +
+      tempFormat.getUTCHours() +
+      ":" +
+      tempFormat.getUTCMinutes() +
+      ":" +
+      tempFormat.getUTCSeconds();
+    return timeFormat;
+  };
+  likeHandler = (value) => {
+    let number_of_posts = this.state.posts.length;
+    var temp_array = this.state.posts;
+    for (let i = 0; i < number_of_posts; i++) {
+      if (temp_array[i].id === value) {
+        if (temp_array[i].like === false) {
+          temp_array[i].like = true;
+          temp_array[i].likeCount++;
+          temp_array[i].className = "red";
+        } else {
+          temp_array[i].like = false;
+          temp_array[i].likeCount--;
+          temp_array[i].className = "none";
+        }
+      }
+      this.setState({ posts: temp_array });
+    }
+  };
+  commentHandler = (id, value) => {
+    let number_of_posts = this.state.posts.length;
+    var temp_array = this.state.posts;
+    for (let i = 0; i < number_of_posts; i++) {
+      if (temp_array[i].id === id) {
+        var comments = temp_array[i].comments;
+        comments.push(value);
+        temp_array[i].comments = comments;
+      }
+      this.setState({ posts: temp_array });
+    }
   };
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
@@ -48,21 +126,22 @@ class Home extends Component {
           that.getPostDetailsForID(id);
         }
         that.setState({ copyOfPosts: response_Received.data });
-        }
+      }
     });
   }
   filterPostBySeachString = (search_string) => {
     let number_of_posts = this.state.copyOfPosts.length;
-    console.log("filter applied");
     for (let i = 0; i < number_of_posts; i++) {
-      if (this.state.copyOfPosts[i].caption.includes(search_string)) {
-        console.log(this.state.copyOfPosts[i].caption);
+      if (
+        this.state.copyOfPosts[i].caption
+          .toUpperCase()
+          .includes(search_string.toUpperCase())
+      ) {
         this.getPostDetailsForID(this.state.copyOfPosts[i].id);
       }
     }
   };
   getPostDetailsForID = (id) => {
-    console.log(id);
     let data = null;
     let xhr = new XMLHttpRequest();
     let that = this;
@@ -78,18 +157,29 @@ class Home extends Component {
     xhr.addEventListener("readystatechange", function() {
       if (this.readyState === 4) {
         var response = JSON.parse(this.responseText);
+        response.like = false;
+        response.likeCount = 7;
+        response.comments = [];
+        response.className = "none";
+        let tags = "";
+        let captionData = response.caption.split("#");
+        response.caption = captionData[0];
+        for (let i = 1; i < captionData.length; i++) {
+          tags += "#" + captionData[i] + " ";
+        }
+        response.hashTags = tags;
         var posts_available = that.state.posts;
         posts_available.push(response);
         that.setState({
           posts: posts_available,
         });
-        console.log(that.state.posts);
       }
     });
   };
   render() {
+    const { classes } = this.props;
     return (
-      <div>
+      <div className={classes.root}>
         <Header
           searchBox={true}
           profile={true}
@@ -97,45 +187,83 @@ class Home extends Component {
           seachInputHandler={this.seachInputHandler}
           history={this.props.history}
         />
-        <div>
-          <GridList cellHeight="auto" cols={2}>
-            {this.state.posts.map((post) => (
-              <GridListTile key={"instagram" + post.id} className="grid-list">
-                <Card className="poster" variant="outlined">
-                  <CardHeader
-                    avatar={
-                      <Avatar>
-                        <img
-                          className="thumbnail-image"
-                          src={this.state.hardCoded_profile_pic}
-                          alt={post.id}
-                        />
-                      </Avatar>
-                    }
-                    title={post.username}
-                    subheader={post.timestamp}
-                  />
-                  <CardContent>
-                    <GridListTile key={"grid" + post.id}>
+        <div className="show-case">
+          {this.state.posts.map((post) => (
+            <div key={"instagram" + post.id} className={classes.response}>
+              <Card className={classes.poster} variant="outlined">
+                <CardHeader
+                  avatar={
+                    <Avatar>
                       <img
-                        src={post.media_url}
+                        className="thumbnail-image"
+                        src={this.state.hardCoded_profile_pic}
                         alt={post.id}
-                        className="poster-image"
                       />
-                      <Typography>
-                        <b>{post.caption}</b>
-                      </Typography>
-                    </GridListTile>
-                  </CardContent>
-                </Card>
-                <br />
-              </GridListTile>
-            ))}
-          </GridList>
+                    </Avatar>
+                  }
+                  title={post.username}
+                  subheader={this.formatTime(post.timestamp)}
+                />
+
+                <CardContent>
+                  <img
+                    src={post.media_url}
+                    alt={post.id}
+                    className="poster-image"
+                  />
+                  <div className="divider" />
+                  <Typography>
+                    <b>{post.caption}</b>
+                    <span className={classes.hashTags}>{post.hashTags}</span>
+                  </Typography>
+                  <span
+                    onClick={() => {
+                      this.likeHandler(post.id);
+                    }}
+                  >
+                    {post.className === "red" ? (
+                      <FavoriteIcon className={post.className} />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </span>
+                  <span>{"  " + post.likeCount + "Likes"}</span>
+                  <br />
+                  {post.comments.map((comment) => (
+                    <div>{comment}</div>
+                  ))}
+                  <FormControl>
+                    <InputLabel htmlFor={post.id} required>
+                      Add a comment
+                    </InputLabel>
+                    <Input
+                      id={post.id}
+                      type="text"
+                      className={classes.textFieldWidth}
+                    />
+                  </FormControl>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    onClick={() =>
+                      this.commentHandler(
+                        post.id,
+                        post.username +
+                          ": " +
+                          document.getElementById(post.id).value
+                      )
+                    }
+                  >
+                    ADD
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+          ))}
         </div>
       </div>
     );
   }
 }
 
-export default Home;
+export default withStyles(styles)(Home);

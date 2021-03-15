@@ -1,28 +1,187 @@
 import React, { Component } from "react";
 import "./Profile.css";
 import Header from "../../common/header/Header";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import Avatar from "@material-ui/core/Avatar";
+import { withStyles } from "@material-ui/core/styles";
+import Button from "@material-ui/core/Button";
+import EditIcon from "@material-ui/icons/Edit";
+import Input from "@material-ui/core/Input";
+import FormControl from "@material-ui/core/FormControl";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Modal from "../../common/modal/Modal";
+
+const customStyles = (theme) => ({
+  avatarStyle: {
+    float: "left",
+    width: "300px",
+    height: "250px",
+  },
+  root: {
+    margin: "2px auto",
+    width: "80%",
+    cursor: "pointer",
+  },
+});
 
 class Profile extends Component {
-    constructor() {
-        super();
-        this.state = {
-         posts: [],
-         hardCoded_profile_pic:
-            "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70",
-        };
+  constructor() {
+    super();
+    this.state = {
+      posts: [],
+      username: "",
+      count_of_posts: 0,
+      hardCoded_profile_pic: sessionStorage.getItem("profile_picture"),
+      fullName: "Devanathan Babu ",
+      showModal: false,
+      usernameChange: "",
+      usernameChangeModalShow: "dispNone",
+      showModalforId: null,
+    };
+  }
+  toggle = () => {
+    console.log("modal");
+    this.setState((prevState) => ({
+      toggle: !prevState.toggle,
+    }));
+  };
+  componentDidMount() {
+    if (sessionStorage.getItem("access-token") === null) {
+      this.props.history.push("/");
     }
+    let data = null;
+    let xhr = new XMLHttpRequest();
+    let that = this;
+    xhr.open(
+      "GET",
+      "https://graph.instagram.com/me/media?fields=id,caption&access_token=" +
+        sessionStorage.getItem("access-token")
+    );
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.send(data);
+    xhr.addEventListener("readystatechange", function() {
+      if (this.readyState === 4) {
+        var response_Received = JSON.parse(this.responseText);
+        let number_of_posts = response_Received.data.length;
+        for (let i = 0; i < number_of_posts; i++) {
+          var id = response_Received.data[i].id;
+          that.getPostDetailsForID(id);
+        }
+      }
+    });
+  }
+  getPostDetailsForID = (id) => {
+    let data = null;
+    let xhr = new XMLHttpRequest();
+    let that = this;
+    xhr.open(
+      "GET",
+      "https://graph.instagram.com/" +
+        id +
+        "?fields=id,media_type,media_url,username,timestamp,caption&access_token=" +
+        sessionStorage.getItem("access-token")
+    );
+    xhr.setRequestHeader("Cache-Control", "no-cache");
+    xhr.send(data);
+    xhr.addEventListener("readystatechange", function() {
+      if (this.readyState === 4) {
+        var response = JSON.parse(this.responseText);
+        var posts_available = that.state.posts;
+        posts_available.push(response);
+        that.setState({
+          posts: posts_available,
+          username: posts_available[0].username,
+          count_of_posts: that.state.count_of_posts + 1,
+        });
+      }
+    });
+  };
+   closeModal = ()=>{
+    this.setState({ showModal: false });
+  }
+  saveUsername =(event)=>{
+    this.setState({ showModal: false });
+  }
+  showNameUpdateModal = ()=>{
+    this.setState({showModal:true});
+  }
+  updateUsernameHandler =(value)=>{
+    this.setState({showModal:false,fullName:value});
+  }
   render() {
-   
+    var modal = [];
+    const { classes } = this.props;
     return (
       <div>
         <Header
           profile={true}
+          myAccount={false}
           profile_pic={this.state.hardCoded_profile_pic}
           history={this.props.history}
         />
+        <div className="account-info-container">
+          <div>
+            <Avatar
+              src={this.state.hardCoded_profile_pic}
+              alt="Profile picture"
+              className={classes.avatarStyle}
+            />
+          </div>
+          <div>
+            <h2>
+              {this.state.posts.length > 0 && this.state.posts[0].username}
+            </h2>
+            <div className="profile-info-wrapper">
+              <div>Posts: 3</div>
+              <div>Follows: 12</div>
+              <div>Followed By: 22</div>
+            </div>
+            <div className="flex font-weight-600">
+              {this.state.fullName}
+              <Button
+                variant="contained"
+                color="secondary"
+                className={classes.button}
+                onClick={this.showNameUpdateModal}
+              >
+                <EditIcon className={classes.editIcon} />
+              </Button>
+              {modal}
+            </div>
+          </div>
+        </div>
+        <div className={classes.root}>
+          <GridList cellHeight={300} cols={3}>
+            {this.state.posts &&
+              this.state.posts.length > 0 &&
+              this.state.posts.map((post) => (
+                <GridListTile
+                  key={post.media_url}
+                  onClick={(e) => this.showModalforId(post.id)}
+                >
+                  <img
+                    src={post.media_url}
+                    alt="post"
+                    width="250"
+                    height="350"
+                  />
+                </GridListTile>
+              ))}
+          </GridList>
+          {this.state.showModal === true && (
+            <div id="modal">
+              <Modal open={true} 
+              closeModal={this.closeModal}
+              module = "usernameUpdate"
+              performUpdate={this.updateUsernameHandler}/>
+            </div>
+          )}
+        </div>
       </div>
     );
   }
 }
 
-export default Profile;
+export default withStyles(customStyles)(Profile);

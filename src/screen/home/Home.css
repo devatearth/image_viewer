@@ -1,22 +1,18 @@
-.flex-container {
-  display: flex;
-  flex-wrap: nowrap;
-  transform: translateZ(0);
-  width: 100%;
-}
 .grid-list{
-  padding: 100px;
+  padding: 0px;
 }
 .poster {
-  width: 100% !important;
-  height: 100% !important;
-  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.07);
+  width: auto;
+  height: auto;
 }
 
 
 .poster-image{
-  width : 50%;
-  height: 50%;
+  width : auto;
+  height: auto;
+  max-width: 750px;
+  max-height:800px
+  
 }
 
 .thumbnail-image{
@@ -29,4 +25,23 @@
 }
 .dispBlock{
   display: block;
+}
+.show-case{
+  display: flex;
+  flex-wrap: wrap;
+  margin: 30px !important;
+  }
+.show-case .gird-tabs{
+  padding: 20px !important;
+  margin: 30px;
+}
+.red{
+  color: red;
+  cursor: pointer;
+}
+.none{
+  background-color: white;
+}
+.comment-box{
+  padding: 10px;
 }

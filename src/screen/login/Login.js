@@ -17,7 +17,7 @@ class Login extends Component {
       password: "",
       loginControl: "disp-none",
       accessToken:
-        "IGQVJYam13REZAERksxQkYtbldpY0JOOFZASdUVGNGNkVEY0SmF3QlBzYU5TRlVHMTNwckhva1d0MFhSM1RQUzVEU3k4bllYV29RVjd4M2JkSkdnb2FBZA2E5NUpSWEtPenpnOTZAKTnFUU2JzQlJUZAFNhUQZDZD",
+        "IGQVJXTlpST3RVdEtaSm9YLUY5eDBneVpHbXM1V094VEhpeUVhdWRFZAmNZAcWhmalByVTJDSjJZAd1hDM3pUUlhuamZAIYnNCY3MxdF9mM2hiSWdaTC1CUFpqT2tpdy03TWNyWndibHpaUzZA3ZATNrc1BjWQZDZD",
       dummy_username: "Dev",
       dummy_password: "12345678",
       usernameRequired: "disp-none",
@@ -37,6 +37,10 @@ class Login extends Component {
     ) {
       this.setState({ loginControl: "disp-none" });
       sessionStorage.setItem("access-token", this.state.accessToken);
+      sessionStorage.setItem(
+        "profile_picture",
+        "https://rukminim1.flixcart.com/image/416/416/mask/t/z/h/tom-jerry-face-free-size-original-imaefczgyqqpz56y.jpeg?q=70"
+      );
       this.props.history.push("/home");
     } else if (this.state.username !== "" && this.state.password !== "") {
       this.setState({ loginControl: "disp-block" });

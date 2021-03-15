@@ -1,18 +1,18 @@
 import React, { Component } from "react";
 import "./Profile.css";
 import Header from "../../common/header/Header";
+import Modal from "../../common/modal/Modal";
+import { withStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import Avatar from "@material-ui/core/Avatar";
-import { withStyles } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
 import Input from "@material-ui/core/Input";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import Modal from "../../common/modal/Modal";
-
+/* Higher order component*/
 const customStyles = (theme) => ({
   avatarStyle: {
     float: "left",
@@ -25,7 +25,7 @@ const customStyles = (theme) => ({
     cursor: "pointer",
   },
 });
-
+/* Profile component class*/
 class Profile extends Component {
   constructor() {
     super();
@@ -41,12 +41,14 @@ class Profile extends Component {
       showModalforId: null,
     };
   }
+  /*When a user clicks outside modal the toggle will happen*/
   toggle = () => {
     console.log("modal");
     this.setState((prevState) => ({
       toggle: !prevState.toggle,
     }));
   };
+/* This method will be used to fetch data from API and update the state variables*/
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
@@ -72,6 +74,7 @@ class Profile extends Component {
       }
     });
   }
+/*This method will get post details for a given ID*/
   getPostDetailsForID = (id) => {
     let data = null;
     let xhr = new XMLHttpRequest();
@@ -98,15 +101,19 @@ class Profile extends Component {
       }
     });
   };
+/* This below code will close the modal*/
    closeModal = ()=>{
     this.setState({ showModal: false });
   }
+/* This below code will update the suername*/
   saveUsername =(event)=>{
     this.setState({ showModal: false });
   }
+/* This below code will show the modal*/
   showNameUpdateModal = ()=>{
     this.setState({showModal:true});
   }
+/* This below code will update the username*/
   updateUsernameHandler =(value)=>{
     this.setState({showModal:false,fullName:value});
   }

@@ -12,7 +12,6 @@ import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
 import Input from "@material-ui/core/Input";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
-import CardActions from "@material-ui/core/CardActions";
 import FormControl from "@material-ui/core/FormControl";
 /*Higher order component */
 var styles = (theme) => ({
@@ -85,7 +84,7 @@ class Home extends Component {
           temp_array[i].like = true;
           temp_array[i].likeCount++;
           temp_array[i].className = "red";
-        } else {
+        }else{
           temp_array[i].like = false;
           temp_array[i].likeCount--;
           temp_array[i].className = "none";

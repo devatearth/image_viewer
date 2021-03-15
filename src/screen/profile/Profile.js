@@ -8,10 +8,7 @@ import GridListTile from "@material-ui/core/GridListTile";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import EditIcon from "@material-ui/icons/Edit";
-import Input from "@material-ui/core/Input";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
+
 /* Higher order component*/
 const customStyles = (theme) => ({
   avatarStyle: {
@@ -36,9 +33,8 @@ class Profile extends Component {
       hardCoded_profile_pic: sessionStorage.getItem("profile_picture"),
       fullName: "Devanathan Babu ",
       showModal: false,
-      usernameChange: "",
-      usernameChangeModalShow: "dispNone",
-      showModalforId: null,
+      modalImageId: 0,
+      currentModal: null,
     };
   }
   /*When a user clicks outside modal the toggle will happen*/
@@ -48,7 +44,7 @@ class Profile extends Component {
       toggle: !prevState.toggle,
     }));
   };
-/* This method will be used to fetch data from API and update the state variables*/
+  /* This method will be used to fetch data from API and update the state variables*/
   componentDidMount() {
     if (sessionStorage.getItem("access-token") === null) {
       this.props.history.push("/");
@@ -59,11 +55,11 @@ class Profile extends Component {
     xhr.open(
       "GET",
       "https://graph.instagram.com/me/media?fields=id,caption&access_token=" +
-        sessionStorage.getItem("access-token")
+      sessionStorage.getItem("access-token")
     );
     xhr.setRequestHeader("Cache-Control", "no-cache");
     xhr.send(data);
-    xhr.addEventListener("readystatechange", function() {
+    xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
         var response_Received = JSON.parse(this.responseText);
         let number_of_posts = response_Received.data.length;
@@ -74,7 +70,7 @@ class Profile extends Component {
       }
     });
   }
-/*This method will get post details for a given ID*/
+  /*This method will get post details for a given ID*/
   getPostDetailsForID = (id) => {
     let data = null;
     let xhr = new XMLHttpRequest();
@@ -82,13 +78,13 @@ class Profile extends Component {
     xhr.open(
       "GET",
       "https://graph.instagram.com/" +
-        id +
-        "?fields=id,media_type,media_url,username,timestamp,caption&access_token=" +
-        sessionStorage.getItem("access-token")
+      id +
+      "?fields=id,media_type,media_url,username,timestamp,caption&access_token=" +
+      sessionStorage.getItem("access-token")
     );
     xhr.setRequestHeader("Cache-Control", "no-cache");
     xhr.send(data);
-    xhr.addEventListener("readystatechange", function() {
+    xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
         var response = JSON.parse(this.responseText);
         var posts_available = that.state.posts;
@@ -101,21 +97,26 @@ class Profile extends Component {
       }
     });
   };
-/* This below code will close the modal*/
-   closeModal = ()=>{
+  /* This below code will close the modal*/
+  closeModal = () => {
+    this.setState({ showModal: false,currentId:0,currentModal:null});
+  }
+  /* This below code will update the suername*/
+  saveUsername = (event) => {
     this.setState({ showModal: false });
   }
-/* This below code will update the suername*/
-  saveUsername =(event)=>{
-    this.setState({ showModal: false });
+  /* This below code will show the modal*/
+  showNameUpdateModal = () => {
+    this.setState({ showModal: true, currentModal: "usernameUpdate" });
   }
-/* This below code will show the modal*/
-  showNameUpdateModal = ()=>{
-    this.setState({showModal:true});
+  /* This below code will update the username*/
+  updateUsernameHandler = (value) => {
+    this.setState({ showModal: false, fullName: value });
   }
-/* This below code will update the username*/
-  updateUsernameHandler =(value)=>{
-    this.setState({showModal:false,fullName:value});
+  /*Image MOdal */
+  showModalforId = (imageId) => {
+    console.log(imageId);
+    this.setState({ showModal: true, modalImageId: imageId, currentModal: "updateImageModal" });
   }
   render() {
     var modal = [];
@@ -179,10 +180,12 @@ class Profile extends Component {
           </GridList>
           {this.state.showModal === true && (
             <div id="modal">
-              <Modal open={true} 
-              closeModal={this.closeModal}
-              module = "usernameUpdate"
-              performUpdate={this.updateUsernameHandler}/>
+              <Modal open={true}
+                closeModal={this.closeModal}
+                module={this.state.currentModal}
+                performUpdate={this.updateUsernameHandler}
+                posts={this.state.posts}
+                currentId={this.state.modalImageId} />
             </div>
           )}
         </div>

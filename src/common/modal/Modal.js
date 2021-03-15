@@ -3,21 +3,19 @@ import { makeStyles } from "@material-ui/core/styles";
 import Modal from "@material-ui/core/Modal";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
-
-function rand() {
-  return Math.round(Math.random() * 20) - 10;
-}
+// import FormHelperText from "@material-ui/core/FormHelperText";
 
 function getModalStyle(props) {
+  var top = 0;
+  var left = 0;
   if (props.module === "usernameUpdate") {
-    var top = 45;
-    var left = 40;
+    top = 45;
+    left = 40;
   } else {
-    var top = 40;
-    var left = 40;
+    top = 40;
+    left = 40;
   }
   return {
     top: `${top}%`,
@@ -36,12 +34,6 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2, 4, 3),
   },
 }));
-function usernameUpdateHandler(props) {
-  if (updatedUsername !== "") {
-   props.performUpdate(updatedUsername);
-  }
-  console.log("name");
-}
 function storeName(event) {
   updatedUsername = event.target.value;
 }
@@ -49,15 +41,22 @@ export default function SimpleModal(props) {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle(props));
-  const [open, setOpen] = React.useState(false);
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
+  
+  const usernameUpdateHandler = () => {
+    if (updatedUsername !== "") {
+      props.performUpdate(updatedUsername + " ");
+    }
+    console.log("name");
+  }
+  const getpost = () => {
+    let number_of_posts = props.posts.length;
+    for (let i = 0; i < number_of_posts; i++) {
+      if (props.posts[i].id === props.currentId) {
+        console.log(props.posts[i]);
+        return props.posts[i];
+      }
+    }
+  }
   const updateUsername = (
     <div style={modalStyle} className={classes.paper}>
       <div>
@@ -71,29 +70,55 @@ export default function SimpleModal(props) {
           <Input id="username" type="text" onChange={storeName} />
         </FormControl>
       </div>
+      <br />
+      <br />
       <div>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={usernameUpdateHandler(props)}
-      >
-        UPDATE
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={usernameUpdateHandler}
+        >
+          UPDATE
       </Button>
       </div>
     </div>
   );
-
+  { var post = getpost(props.currentId) }
+  var updateImageModal = (
+    <div style={modalStyle} className={classes.paper}>
+      <div className="postImageWrapper">
+        <img src={post.media_url} alt={post.id} className="post-image" />
+      </div>
+      <div>
+        <FormControl>
+          <InputLabel htmlFor="username" required>
+            Full Name
+        </InputLabel>
+          <Input id="username" type="text" onChange={storeName} />
+        </FormControl>
+      </div>
+      <br />
+      <br />
+      <div>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={usernameUpdateHandler}
+        >
+          UPDATE
+    </Button>
+      </div>
+    </div>
+  );
   return (
-    
     <div>
-      {console.log("div")}
       <Modal
         open={props.open}
         onClose={props.closeModal}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        {updateUsername}
+        {props.currentModal === "usernameUpdate" ? updateUsername : updateImageModal}
       </Modal>
     </div>
   );

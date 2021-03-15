@@ -5,17 +5,15 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
-// import FormHelperText from "@material-ui/core/FormHelperText";
 
 function getModalStyle(props) {
-  var top = 0;
-  var left = 0;
+  var top,left;
   if (props.module === "usernameUpdate") {
-    top = 45;
-    left = 40;
+     top = 45;
+     left = 40;
   } else {
-    top = 40;
-    left = 40;
+     top = 40;
+     left = 40;
   }
   return {
     top: `${top}%`,
@@ -41,19 +39,20 @@ export default function SimpleModal(props) {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle(props));
-  
+  const [open, setOpen] = React.useState(false);
+
   const usernameUpdateHandler = () => {
     if (updatedUsername !== "") {
       props.performUpdate(updatedUsername + " ");
     }
-    console.log("name");
+    console.log(open);
   }
   const getpost = () => {
     let number_of_posts = props.posts.length;
+    var post = [];
     for (let i = 0; i < number_of_posts; i++) {
       if (props.posts[i].id === props.currentId) {
-        console.log(props.posts[i]);
-        return props.posts[i];
+        post = props.posts[i];
       }
     }
   }
@@ -85,15 +84,16 @@ export default function SimpleModal(props) {
   );
   { var post = getpost(props.currentId) }
   var updateImageModal = (
+
     <div style={modalStyle} className={classes.paper}>
-      <div className="postImageWrapper">
-        <img src={post.media_url} alt={post.id} className="post-image" />
+      <div>
+        <h2 id="simple-modal-title">Edit</h2>
       </div>
       <div>
         <FormControl>
           <InputLabel htmlFor="username" required>
             Full Name
-        </InputLabel>
+          </InputLabel>
           <Input id="username" type="text" onChange={storeName} />
         </FormControl>
       </div>
@@ -106,11 +106,13 @@ export default function SimpleModal(props) {
           onClick={usernameUpdateHandler}
         >
           UPDATE
-    </Button>
+      </Button>
       </div>
     </div>
-  );
+  )
+
   return (
+
     <div>
       <Modal
         open={props.open}
@@ -118,6 +120,7 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
+
         {props.currentModal === "usernameUpdate" ? updateUsername : updateImageModal}
       </Modal>
     </div>

@@ -7,13 +7,13 @@ import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
 
 function getModalStyle(props) {
-  var top,left;
+  var top, left;
   if (props.module === "usernameUpdate") {
-     top = 45;
-     left = 40;
+    top = 45;
+    left = 40;
   } else {
-     top = 40;
-     left = 40;
+    top = 40;
+    left = 40;
   }
   return {
     top: `${top}%`,
@@ -55,8 +55,6 @@ export default function SimpleModal(props) {
       }
     }
   }
-  var post = getpost(props.currentId);
-  console.log(post);
   const updateUsername = (
     <div style={modalStyle} className={classes.paper}>
       <div>
@@ -83,37 +81,26 @@ export default function SimpleModal(props) {
       </div>
     </div>
   );
-
-  var updateImageModal = (
-
-    <div style={modalStyle} className={classes.paper}>
-      <div>
-        <h2 id="simple-modal-title">Edit</h2>
-      </div>
-      <div>
-        <FormControl>
-          <InputLabel htmlFor="username" required>
-            Full Name
-          </InputLabel>
-          <Input id="username" type="text" onChange={storeName} />
-        </FormControl>
-      </div>
-      <br />
-      <br />
-      <div>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={usernameUpdateHandler}
-        >
-          UPDATE
-      </Button>
-      </div>
-    </div>
-  )
-
+  if (props.module !== "usernameUpdate") {
+    var post = getpost(props.currentId);
+    return (
+      <Modal
+        open={props.open}
+        onClose={props.closeModal}
+        aria-labelledby="simple-modal-title"
+        aria-describedby="simple-modal-description"
+      >
+        <div style={modalStyle} className={classes.paper}>
+          <div>
+            <img src={post.media_url} alt={post.id}></img>
+          </div>
+          <br />
+          <br />
+        </div>
+      </Modal>
+    );
+  }
   return (
-
     <div>
       <Modal
         open={props.open}
@@ -121,8 +108,7 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-
-        {props.currentModal === "usernameUpdate" ? updateUsername : updateImageModal}
+        {updateUsername}
       </Modal>
     </div>
   );

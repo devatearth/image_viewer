@@ -39,7 +39,6 @@ class Profile extends Component {
   }
   /*When a user clicks outside modal the toggle will happen*/
   toggle = () => {
-    console.log("modal");
     this.setState((prevState) => ({
       toggle: !prevState.toggle,
     }));
@@ -115,7 +114,6 @@ class Profile extends Component {
   }
   /*Image MOdal */
   showModalforId = (imageId) => {
-    console.log(imageId);
     this.setState({ showModal: true, modalImageId: imageId, currentModal: "updateImageModal" });
   }
   render() {

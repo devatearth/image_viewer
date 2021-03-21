@@ -39,7 +39,7 @@ export default function SimpleModal(props) {
   const classes = useStyles();
   // getModalStyle is not a pure function, we roll the style only on the first render
   const [modalStyle] = React.useState(getModalStyle(props));
-  const [open, setOpen] = React.useState(false);
+  const [open] = React.useState(false);
 
   const usernameUpdateHandler = () => {
     if (updatedUsername !== "") {
@@ -49,13 +49,14 @@ export default function SimpleModal(props) {
   }
   const getpost = () => {
     let number_of_posts = props.posts.length;
-    var post = [];
     for (let i = 0; i < number_of_posts; i++) {
       if (props.posts[i].id === props.currentId) {
-        post = props.posts[i];
+        return props.posts[i];
       }
     }
   }
+  var post = getpost(props.currentId);
+  console.log(post);
   const updateUsername = (
     <div style={modalStyle} className={classes.paper}>
       <div>
@@ -82,7 +83,7 @@ export default function SimpleModal(props) {
       </div>
     </div>
   );
-  { var post = getpost(props.currentId) }
+
   var updateImageModal = (
 
     <div style={modalStyle} className={classes.paper}>

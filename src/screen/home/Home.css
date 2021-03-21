@@ -10,9 +10,8 @@
 .poster-image{
   width : auto;
   height: auto;
-  max-width: 750px;
-  max-height:800px
-  
+  max-width: 500px;
+  max-height:550px;
 }
 
 .thumbnail-image{
@@ -30,6 +29,8 @@
   display: flex;
   flex-wrap: wrap;
   margin: 30px !important;
+  justify-content: space-between;
+  align-items: flex-start;
   }
 .show-case .gird-tabs{
   padding: 20px !important;

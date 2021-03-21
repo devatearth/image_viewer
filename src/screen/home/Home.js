@@ -193,7 +193,7 @@ class Home extends Component {
           seachInputHandler={this.seachInputHandler}
           history={this.props.history}
         />
-        <div className="show-case">
+        <div className="show-case ">
           {this.state.posts.map((post) => (
             <div key={"instagram" + post.id} className={classes.response}>
               <Card className={classes.poster} variant="outlined">

@@ -92,7 +92,7 @@ export default function SimpleModal(props) {
       >
         <div style={modalStyle} className={classes.paper}>
           <div>
-            <img src={post.media_url} alt={post.id}></img>
+            <img src={post.media_url} alt={post.id} className="poster-image"></img>
           </div>
           <br />
           <br />

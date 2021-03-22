@@ -157,6 +157,9 @@ export default function SimpleModal(props) {
                   </span>
                   <span>{"  " + 3 + "Likes"}</span>
                   <br />
+                  {post.comments.map((comment) => (
+                    <div key={"comment" + post.id + comment}>{comment}</div>
+                  ))}
                   <FormControl>
                     <InputLabel htmlFor={post.id} required>
                       Add a comment

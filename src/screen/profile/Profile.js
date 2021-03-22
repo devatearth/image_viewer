@@ -86,6 +86,17 @@ class Profile extends Component {
     xhr.addEventListener("readystatechange", function () {
       if (this.readyState === 4) {
         var response = JSON.parse(this.responseText);
+        response.like = false;
+        response.likeCount = 7;
+        response.comments = [];
+        response.className = "none";
+        let tags = "";
+        let captionData = response.caption.split("#");
+        response.caption = captionData[0];
+        for (let i = 1; i < captionData.length; i++) {
+          tags += "#" + captionData[i] + " ";
+        }
+        response.hashTags = tags;
         var posts_available = that.state.posts;
         posts_available.push(response);
         that.setState({

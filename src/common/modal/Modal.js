@@ -5,7 +5,14 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Input from "@material-ui/core/Input";
 import Button from "@material-ui/core/Button";
-
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import Avatar from "@material-ui/core/Avatar";
+import Typography from "@material-ui/core/Typography";
+import CardContent from "@material-ui/core/CardContent";
+import FavoriteIcon from "@material-ui/icons/Favorite";
+import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+import "./Modal.css";
 function getModalStyle(props) {
   var top, left;
   if (props.module === "usernameUpdate") {
@@ -30,6 +37,29 @@ const useStyles = makeStyles((theme) => ({
     border: "2px",
     boxShadow: theme.shadows[5],
     padding: theme.spacing(2, 4, 3),
+  }, paperModal: {
+    display: "flex",
+    position: "absolute",
+    width: 1100,
+    backgroundColor: theme.palette.background.paper,
+    border: "2px",
+    boxShadow: theme.shadows[5],
+    padding: theme.spacing(2, 4, 3),
+  }, left: {
+    width: 45,
+  }, right: {
+    position: "absolute",
+    right: 0,
+    width: "50%",
+    padding: "4px",
+  }, hashTags: {
+    display: "block",
+    color: "#00376b",
+  },
+  textFieldWidth: {
+    paddingLeft: "30px",
+    margin: "0 0 0 -7px",
+    width: "80%",
   },
 }));
 function storeName(event) {
@@ -90,12 +120,57 @@ export default function SimpleModal(props) {
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
       >
-        <div style={modalStyle} className={classes.paper}>
-          <div>
-            <img src={post.media_url} alt={post.id} className="poster-image"></img>
+        <div style={modalStyle} className={classes.paperModal}>
+          <div className={classes.left}>
+            <img src={post.media_url} alt={post.id} className="poster-image_modal"></img>
           </div>
           <br />
           <br />
+          <div>
+            <div className={classes.right}>
+              <Card className={classes.poster} variant="outlined">
+                <CardHeader
+                  avatar={
+                    <Avatar>
+                      <img
+                        className="thumbnail-image"
+                        src={props.profile_pic}
+                        alt={post.id}
+                      />
+                    </Avatar>
+                  }
+                  title={post.username}
+                />
+                <CardContent>
+                  <div className="divider"></div>
+                  <Typography>
+                    <b>{post.caption}</b>
+                  </Typography>
+                  <br />
+                  <div className={classes.hashTags}>{post.hashTags}</div>
+                  <span>
+                    {post.className === "red" ? (
+                      <FavoriteIcon className={post.className} />
+                    ) : (
+                      <FavoriteBorderIcon />
+                    )}
+                  </span>
+                  <span>{"  " + 3 + "Likes"}</span>
+                  <br />
+                  <FormControl>
+                    <InputLabel htmlFor={post.id} required>
+                      Add a comment
+                    </InputLabel>
+                    <Input
+                      id={post.id}
+                      type="text"
+                      className={classes.textFieldWidth}
+                    />
+                  </FormControl>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
         </div>
       </Modal>
     );

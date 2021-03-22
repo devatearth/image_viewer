@@ -183,7 +183,9 @@ class Profile extends Component {
                 module={this.state.currentModal}
                 performUpdate={this.updateUsernameHandler}
                 posts={this.state.posts}
-                currentId={this.state.modalImageId} />
+                currentId={this.state.modalImageId}
+                profile_pic={this.state.hardCoded_profile_pic} 
+                likeHandler={this.likeHandler}/>
             </div>
           )}
         </div>

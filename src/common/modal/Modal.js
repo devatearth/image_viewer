@@ -12,6 +12,7 @@ import Typography from "@material-ui/core/Typography";
 import CardContent from "@material-ui/core/CardContent";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import FavoriteBorderIcon from "@material-ui/icons/FavoriteBorder";
+
 import "./Modal.css";
 function getModalStyle(props) {
   var top, left;
@@ -170,6 +171,12 @@ export default function SimpleModal(props) {
                       className={classes.textFieldWidth}
                     />
                   </FormControl>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                  >
+                    ADD
+                  </Button>
                 </CardContent>
               </Card>
             </div>
